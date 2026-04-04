@@ -1,0 +1,10 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /studio/
+
+# Host
+Host: https://example.com
+
+# Sitemaps
+Sitemap: https://example.com/sitemap.xml
