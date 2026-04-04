@@ -21,8 +21,7 @@ export default function ThemeButton() {
     const y = top + height / 2;
     const viewportWidth = window.visualViewport?.width ?? window.innerWidth;
     const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
-    
-    // Calculate the maximum radius needed to cover the entire screen from the click point
+
     const maxRadius = Math.hypot(
       Math.max(x, viewportWidth - x),
       Math.max(y, viewportHeight - y)
@@ -32,7 +31,7 @@ export default function ThemeButton() {
     const newTheme = isDark ? "light" : "dark";
 
     // View Transitions API check
-    if (typeof document.startViewTransition !== "function") {
+    if (typeof (document as any).startViewTransition !== "function") {
       setTheme(newTheme);
       return;
     }
@@ -49,8 +48,7 @@ export default function ThemeButton() {
     `;
     document.head.appendChild(disableTransitions);
 
-    const transition = document.startViewTransition(() => {
-      // Force instant DOM layout shift to prevent Next-themes async blink
+    const transition = (document as any).startViewTransition(() => {
       if (newTheme === "dark") {
         document.documentElement.classList.add("dark");
         document.documentElement.style.colorScheme = "dark";
@@ -65,8 +63,6 @@ export default function ThemeButton() {
     });
 
     transition.ready.then(() => {
-      const isExpanding = !isDark;
-      
       document.documentElement.animate(
         {
           clipPath: [
@@ -83,7 +79,6 @@ export default function ThemeButton() {
       );
     });
 
-    // Safely remove the CSS overrides ONLY when the entire transition tree is dismantled natively
     transition.finished.then(() => {
       disableTransitions.remove();
     });
